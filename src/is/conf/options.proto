@@ -23,7 +23,7 @@ message SkeletonsGrouperOptions {
   // Maximum joint-joint distance acceptable. Must be in the same unit as extrinsic parameters.
   double max_distance = 10 [(is.validate.rules).double = {gt: 0.0}];
   // Period in milliseconds of the rate that detections will be groupped
-  int32 period_ms = 7 [(is.validate.rules).int32 = {gte: 50, lte: 250}];
+  int32 period_ms = 7 [(is.validate.rules).int32 = {gte: 50, lte: 1000}];
   // Corresponds the number of samples that, in case of 
   // not receive a message from an especific camera, 
   // the buffer from this camera will be released
