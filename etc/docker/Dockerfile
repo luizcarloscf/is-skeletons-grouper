@@ -1,4 +1,28 @@
-FROM labviros/is-wire-base:1.1.4-gcc54 as build
+FROM ubuntu:16.04 as build
+
+WORKDIR /tmp/
+ADD bootstrap.sh .
+RUN bash bootstrap.sh  \
+  && rm -f bootstrap.sh 
+
+RUN pip3 uninstall --yes conan \
+ && pip3 uninstall --yes conan_package_tools \
+ && rm -rf /root/.conan \
+ && pip3 install conan \
+ && pip3 install conan_package_tools \
+ && conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan \
+ && conan remote add is https://api.bintray.com/conan/labviros/is  
+
+ENV CONAN_USERNAME is
+ENV CONAN_LOGIN_USERNAME is
+ENV CONAN_CHANNEL stable
+
+# build caffe and openpose packages
+ADD etc/packages/ /tmp/packages/
+RUN cd /tmp/packages/armadillo/   \
+  && python3 build.py             \
+  && cd /tmp/                     \
+  && rm -rf packages
 
 ADD conanfile.py .
 RUN conan install . -s compiler.libcxx=libstdc++11 --build=missing

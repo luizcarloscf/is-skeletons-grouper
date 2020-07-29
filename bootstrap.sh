@@ -6,9 +6,9 @@ if [[ $EUID != 0 ]]; then
 fi
 
 if [[ $EUID == 0 ]]; then
-  apt update
-  apt install --no-install-recommends -y \
-    git build-essential wget python-pip curl autoconf automake libtool unzip pkg-config ca-certificates nasm
+  apt-get update
+  apt-get install --no-install-recommends -y \
+    git build-essential sudo wget python3 python3-setuptools curl autoconf automake libtool unzip pkg-config ca-certificates nasm
 
   invalid_cmake_version=false
   if command -v cmake > /dev/null ; then 
@@ -37,8 +37,14 @@ if [[ $EUID == 0 ]]; then
     mv -u ninja /usr/bin
   fi
 
+  if ! command -v pip3 > /dev/null; then 
+    wget https://bootstrap.pypa.io/get-pip.py
+    python3 get-pip.py
+    rm -f get-pip.py
+  fi
+
   echo "|>>| Installing and upgrading conan..."; 
-  pip install conan conan_package_tools --upgrade
+  pip3 install conan conan_package_tools --upgrade
 fi
 
 if [[ $EUID != 0 ]]; then
